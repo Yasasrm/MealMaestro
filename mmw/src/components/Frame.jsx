@@ -2,9 +2,7 @@ import React from "react";
 import logo from "../assets/logo.png";
 import { Navbar, Nav, Container } from "react-bootstrap";
 import { Link, Outlet } from "react-router-dom";
-// import Home from "./Home";
-// import DietForm from "./DietForm";
-// import MealPlanList from "./MealCard";
+import MealPlanProvider from "../context/MealPlanContext";
 
 function Frame() {
   return (
@@ -40,7 +38,9 @@ function Frame() {
       </Navbar>
 
       <Container className="mt-4">
-        <Outlet />
+        <MealPlanProvider>
+          <Outlet />
+        </MealPlanProvider>
       </Container>
     </div>
   );

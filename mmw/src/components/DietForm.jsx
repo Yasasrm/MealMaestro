@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { MealPlanContext } from "../context/MealPlanContext";
 
 function DietForm() {
   const [formData, setFormData] = useState({
@@ -15,7 +16,7 @@ function DietForm() {
     meals: "",
     budget: "mid",
   });
-
+  const { setMealPlanList } = useContext(MealPlanContext);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -24,6 +25,39 @@ function DietForm() {
     e.preventDefault();
     console.log("Form Data Submitted:", formData);
     alert("Form submitted successfully!");
+
+    setMealPlanList([
+      {
+        MealPlanNumber: 1,
+        MealShortName: "Tuna Sandwich",
+        MealIconId: 8,
+        Ingredients:
+          "Bread - 2 slices, Tuna - 100g, Butter - 1 tsp, Salt - 1/2 tsp, Pepper - 1/2 tsp, Apple - 1 medium",
+        HowToMake:
+          "Mix tuna with butter, salt, and pepper. Spread mixture onto bread slices and make a sandwich. Serve with an apple.",
+        TotalCalorie: 400,
+      },
+      {
+        MealPlanNumber: 2,
+        MealShortName: "Chicken Rice Bowl",
+        MealIconId: 4,
+        Ingredients:
+          "Rice - 1 cup (200g), Chicken - 150g, Butter - 1 tsp, Salt - 1 tsp, Pepper - 1/2 tsp, Green Chili - 1 small, chopped",
+        HowToMake:
+          "Cook rice separately. Grill or pan-fry chicken with butter, salt, and pepper. Serve chicken over rice with chopped green chili.",
+        TotalCalorie: 600,
+      },
+      {
+        MealPlanNumber: 3,
+        MealShortName: "Beans and Rice Bowl",
+        MealIconId: 7,
+        Ingredients:
+          "Rice - 1 cup (200g), Beans - 100g, Butter - 1 tsp, Salt - 1/2 tsp, Pepper - 1/2 tsp, Orange - 1 medium",
+        HowToMake:
+          "Cook rice separately. Sauté beans with butter, salt, and pepper. Serve beans over rice with a side of orange slices.",
+        TotalCalorie: 500,
+      },
+    ]);
   };
 
   return (
@@ -37,11 +71,31 @@ function DietForm() {
         {[
           { label: "Name", name: "name", type: "text" },
           { label: "Age", name: "age", type: "number", required: true },
-          { label: "Weight (kg)", name: "weight", type: "number", required: true },
-          { label: "Height (cm)", name: "height", type: "number", required: true },
-          { label: "Allergies (comma-separated)", name: "allergies", type: "text" },
+          {
+            label: "Weight (kg)",
+            name: "weight",
+            type: "number",
+            required: true,
+          },
+          {
+            label: "Height (cm)",
+            name: "height",
+            type: "number",
+            required: true,
+          },
+          {
+            label: "Allergies (comma-separated)",
+            name: "allergies",
+            type: "text",
+          },
           { label: "Food Restrictions", name: "restrictions", type: "text" },
-          { label: "Preferred Number of Meals", name: "meals", type: "number", min: 1, max: 6 },
+          {
+            label: "Preferred Number of Meals",
+            name: "meals",
+            type: "number",
+            min: 1,
+            max: 6,
+          },
         ].map((field) => (
           <div className="mb-3" key={field.name}>
             <label className="form-label">{field.label}</label>
@@ -137,4 +191,3 @@ function DietForm() {
 }
 
 export default DietForm;
-

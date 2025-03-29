@@ -1,5 +1,14 @@
-import React, { useState } from "react";
-import { Card, Button, Row, Col, Modal, Form, ButtonGroup } from "react-bootstrap";
+import React, { useContext, useState } from "react";
+import {
+  Card,
+  Button,
+  Row,
+  Col,
+  Modal,
+  Form,
+  ButtonGroup,
+} from "react-bootstrap";
+import { MealPlanContext } from "../context/MealPlanContext";
 
 // MealCard Component
 const MealCard = ({ mealPlan, onCheckboxChange }) => {
@@ -68,7 +77,8 @@ const MealCard = ({ mealPlan, onCheckboxChange }) => {
 };
 
 // MealPlanList Component
-const MealPlanList = ({ mealPlans }) => {
+const MealPlanList = () => {
+  const { mealPlanList } = useContext(MealPlanContext);
   const [selectedMealPlans, setSelectedMealPlans] = useState([]);
 
   const handleCheckboxChange = (mealPlanNumber, isSelected) => {
@@ -87,7 +97,7 @@ const MealPlanList = ({ mealPlans }) => {
   };
 
   const handleGenerateShoppingList = () => {
-    const selectedMealPlansData = mealPlans.filter((mealPlan) =>
+    const selectedMealPlansData = mealPlanList.filter((mealPlan) =>
       selectedMealPlans.includes(mealPlan.MealPlanNumber)
     );
     const ingredients = selectedMealPlansData
@@ -100,26 +110,26 @@ const MealPlanList = ({ mealPlans }) => {
   return (
     <div className="container mt-5">
       <div className="mb-4 text-center">
-      <ButtonGroup aria-label="MealListButtons">
-        <Button
-          variant="secondary"
-          onClick={handleSave}
-          disabled={selectedMealPlans.length === 0}
-        >
-          Save
-        </Button>
-        <Button
-          variant="secondary"
-          onClick={handleGenerateShoppingList}
-          disabled={selectedMealPlans.length === 0}
-          className="ml-3"
-        >
-          Generate Shopping List
-        </Button>
+        <ButtonGroup aria-label="MealListButtons">
+          <Button
+            variant="secondary"
+            onClick={handleSave}
+            disabled={selectedMealPlans.length === 0}
+          >
+            Save
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={handleGenerateShoppingList}
+            disabled={selectedMealPlans.length === 0}
+            className="ml-3"
+          >
+            Generate Shopping List
+          </Button>
         </ButtonGroup>
       </div>
       <Row className="justify-content-center">
-        {mealPlans.map((mealPlan) => (
+        {mealPlanList.map((mealPlan) => (
           <Col
             sm={12}
             md={6}
