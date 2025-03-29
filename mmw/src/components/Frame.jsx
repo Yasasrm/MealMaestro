@@ -3,52 +3,36 @@ import logo from "../assets/logo.png";
 import { Navbar, Nav, Container } from "react-bootstrap";
 // import Home from "./Home";
 // import DietForm from "./DietForm";
-// import MealCard from "./MealCard";
 import MealPlanList from "./MealCard";
 
 function Frame() {
-    const mPlan = [
-        {
-          "MealPlanNumber": 1,
-          "MealShortName": "Milk Drink",
-          "MealIconId": 2,
-          "Ingredients": "Milk - 250ml, Sugar - 1 tsp, Butter - 5g",
-          "HowToMake": "Warm the milk, add sugar, and stir well. Enjoy with a small piece of butter on the side.",
-          "TotalCalorie": 200
-        },
-        {
-          "MealPlanNumber": 2,
-          "MealShortName": "Chicken Rice",
-          "MealIconId": 2,
-          "Ingredients": "Rice - 150g, Chicken - 100g, Green Chili - 1, Salt - to taste, Butter - 10g",
-          "HowToMake": "Cook rice separately. In a pan, cook the chicken with salt and green chili. Once done, mix with rice and add butter for flavor.",
-          "TotalCalorie": 700
-        },
-        {
-          "MealPlanNumber": 3,
-          "MealShortName": "Fruit Snack",
-          "MealIconId": 2,
-          "Ingredients": "Apple - 1, Orange - 1",
-          "HowToMake": "Wash and slice the apple. Peel the orange. Eat as a snack.",
-          "TotalCalorie": 150
-        },
-        {
-          "MealPlanNumber": 4,
-          "MealShortName": "Chicken Rice",
-          "MealIconId": 2,
-          "Ingredients": "Rice - 100g, Chicken - 150g, Pepper - to taste, Salt - to taste, Butter - 10g",
-          "HowToMake": "Cook the rice. In a separate pan, cook the chicken with pepper, salt, and butter. Serve together.",
-          "TotalCalorie": 750
-        },
-        {
-          "MealPlanNumber": 5,
-          "MealShortName": "Milk Drink",
-          "MealIconId": 2,
-          "Ingredients": "Milk - 250ml, Sugar - 1 tsp",
-          "HowToMake": "Warm the milk and add sugar. Stir well before drinking.",
-          "TotalCalorie": 200
-        }
-      ];
+  const mPlan = [
+    {
+        "MealPlanNumber": 1,
+        "MealShortName": "Tuna Sandwich",
+        "MealIconId": 8,
+        "Ingredients": "Bread - 2 slices, Tuna - 100g, Butter - 1 tsp, Salt - 1/2 tsp, Pepper - 1/2 tsp, Apple - 1 medium",
+        "HowToMake": "Mix tuna with butter, salt, and pepper. Spread mixture onto bread slices and make a sandwich. Serve with an apple.",
+        "TotalCalorie": 400
+    },
+    {
+        "MealPlanNumber": 2,
+        "MealShortName": "Chicken Rice Bowl",
+        "MealIconId": 4,
+        "Ingredients": "Rice - 1 cup (200g), Chicken - 150g, Butter - 1 tsp, Salt - 1 tsp, Pepper - 1/2 tsp, Green Chili - 1 small, chopped",
+        "HowToMake": "Cook rice separately. Grill or pan-fry chicken with butter, salt, and pepper. Serve chicken over rice with chopped green chili.",
+        "TotalCalorie": 600
+    },
+    {
+        "MealPlanNumber": 3,
+        "MealShortName": "Beans and Rice Bowl",
+        "MealIconId": 7,
+        "Ingredients": "Rice - 1 cup (200g), Beans - 100g, Butter - 1 tsp, Salt - 1/2 tsp, Pepper - 1/2 tsp, Orange - 1 medium",
+        "HowToMake": "Cook rice separately. Sauté beans with butter, salt, and pepper. Serve beans over rice with a side of orange slices.",
+        "TotalCalorie": 500
+    }
+]
+
 
   return (
     <div className="frame">
@@ -75,7 +59,8 @@ function Frame() {
       </Navbar>
 
       <Container className="mt-4">
-        <MealPlanList mealPlans={mPlan}/>
+        <MealPlanList mealPlans={mPlan} />
+        {/* <DietForm/> */}
       </Container>
     </div>
   );

@@ -38,7 +38,7 @@ const MealCard = ({ mealPlan, onCheckboxChange }) => {
             variant="top"
             src={mealImage}
             className="mt-3"
-            style={{ maxHeight: "200px", objectFit: "cover" }}
+            style={{ maxHeight: "250px", objectFit: "cover" }}
           />
         </Card.Body>
         <Card.Footer className="text-center bg-light">
