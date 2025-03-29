@@ -79,6 +79,8 @@ const MealCard = ({ mealPlan, onCheckboxChange }) => {
 // MealPlanList Component
 const MealPlanList = () => {
   const { mealPlanList } = useContext(MealPlanContext);
+  console.log("mealPlanList");
+  console.log(mealPlanList);
   const [selectedMealPlans, setSelectedMealPlans] = useState([]);
 
   const handleCheckboxChange = (mealPlanNumber, isSelected) => {

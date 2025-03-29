@@ -21,72 +21,34 @@ function DietForm() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form Data Submitted:", formData);
     alert("Form submitted successfully!");
 
-    setMealPlanList([
-      {
-        MealPlanNumber: 1,
-        MealShortName: "Tuna Sandwich",
-        MealIconId: 8,
-        Ingredients:
-          "Bread - 2 slices, Tuna - 100g, Butter - 1 tsp, Salt - 1/2 tsp, Pepper - 1/2 tsp, Apple - 1 medium",
-        HowToMake:
-          "Mix tuna with butter, salt, and pepper. Spread mixture onto bread slices and make a sandwich. Serve with an apple.",
-        TotalCalorie: 400,
-      },
-      {
-        MealPlanNumber: 2,
-        MealShortName: "Chicken Rice Bowl",
-        MealIconId: 4,
-        Ingredients:
-          "Rice - 1 cup (200g), Chicken - 150g, Butter - 1 tsp, Salt - 1 tsp, Pepper - 1/2 tsp, Green Chili - 1 small, chopped",
-        HowToMake:
-          "Cook rice separately. Grill or pan-fry chicken with butter, salt, and pepper. Serve chicken over rice with chopped green chili.",
-        TotalCalorie: 600,
-      },
-      {
-        MealPlanNumber: 3,
-        MealShortName: "Beans and Rice Bowl",
-        MealIconId: 7,
-        Ingredients:
-          "Rice - 1 cup (200g), Beans - 100g, Butter - 1 tsp, Salt - 1/2 tsp, Pepper - 1/2 tsp, Orange - 1 medium",
-        HowToMake:
-          "Cook rice separately. Sauté beans with butter, salt, and pepper. Serve beans over rice with a side of orange slices.",
-        TotalCalorie: 500,
-      },
-      {
-        MealPlanNumber: 1,
-        MealShortName: "Chicken Rice Bowl",
-        MealIconId: 4,
-        Ingredients:
-          "150g Chicken, 200g Rice, 1 Pepper, 1 Green Chili, Salt to taste",
-        HowToMake:
-          "Cook the rice according to package instructions. In a separate pan, cook the chicken until fully done. Add chopped pepper and green chili to the chicken and sauté until they're slightly softened. Serve the chicken mixture over the rice, seasoning with salt.",
-        TotalCalorie: 600,
-      },
-      {
-        MealPlanNumber: 2,
-        MealShortName: "Tuna Salad Sandwich",
-        MealIconId: 8,
-        Ingredients:
-          "100g Tuna, 2 slices Bread, 1 Orange, Salt and Pepper to taste",
-        HowToMake:
-          "Mix tuna with salt and pepper. Spread on one slice of bread, top with the other slice. Serve with an orange on the side.",
-        TotalCalorie: 450,
-      },
-      {
-        MealPlanNumber: 3,
-        MealShortName: "Fruit and Milk Bowl",
-        MealIconId: 1,
-        Ingredients: "1 Apple, 1 Orange, 200ml Milk",
-        HowToMake:
-          "Chop the apple and orange into bite-sized pieces. Combine in a bowl and pour milk over the top.",
-        TotalCalorie: 250,
-      },
-    ]);
+    try {
+      console.log(JSON.stringify(formData)); // delete
+      const response = await fetch("http://localhost:5000/getMealPlan", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit form data");
+      }
+
+      const result = await response.json();
+      console.log("Response from server:", result[0].MealPlan);
+      alert("Form submitted successfully!");
+
+      setMealPlanList(result[0].MealPlan);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("Error submitting form!");
+    }
   };
 
   return (
