@@ -9,6 +9,7 @@ import {
   ButtonGroup,
 } from "react-bootstrap";
 import { MealPlanContext } from "../context/MealPlanContext";
+import { NotificationContext } from "../context/NotificationContext";
 
 // MealCard Component
 const MealCard = ({ mealPlan, onCheckboxChange }) => {
@@ -79,8 +80,7 @@ const MealCard = ({ mealPlan, onCheckboxChange }) => {
 // MealPlanList Component
 const MealPlanList = () => {
   const { mealPlanList } = useContext(MealPlanContext);
-  console.log("mealPlanList");
-  console.log(mealPlanList);
+  const { showMessage, setLoading } = useContext(NotificationContext);
   const [selectedMealPlans, setSelectedMealPlans] = useState([]);
 
   const handleCheckboxChange = (mealPlanNumber, isSelected) => {
@@ -94,8 +94,11 @@ const MealPlanList = () => {
   };
 
   const handleSave = () => {
+    showMessage("Please wait!");
+    setLoading(true);
     console.log("Saving meal plans:", selectedMealPlans);
-    alert("Meal plans saved!");
+    setLoading(false);
+    showMessage("Meal plan saved!");
   };
 
   const handleGenerateShoppingList = () => {
@@ -105,8 +108,11 @@ const MealPlanList = () => {
     const ingredients = selectedMealPlansData
       .map((mealPlan) => mealPlan.Ingredients)
       .join(", ");
+    showMessage("Please wait!");
+    setLoading(true);
     console.log("Generated shopping list:", ingredients);
-    alert("Shopping list generated!");
+    setLoading(false);
+    showMessage("Shopping list generated!");
   };
 
   return (

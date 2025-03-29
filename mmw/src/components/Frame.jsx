@@ -3,6 +3,7 @@ import logo from "../assets/logo.png";
 import { Navbar, Nav, Container } from "react-bootstrap";
 import { Link, Outlet } from "react-router-dom";
 import MealPlanProvider from "../context/MealPlanContext";
+import { NotificationProvider } from "../context/NotificationContext";
 
 function Frame() {
   return (
@@ -38,9 +39,11 @@ function Frame() {
       </Navbar>
 
       <Container className="mt-4">
-        <MealPlanProvider>
-          <Outlet />
-        </MealPlanProvider>
+        <NotificationProvider>
+          <MealPlanProvider>
+            <Outlet />
+          </MealPlanProvider>
+        </NotificationProvider>
       </Container>
     </div>
   );

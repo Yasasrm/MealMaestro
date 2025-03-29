@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { MealPlanContext } from "../context/MealPlanContext";
+import { NotificationContext } from "../context/NotificationContext";
 
 function DietForm() {
   const [formData, setFormData] = useState({
@@ -17,15 +18,15 @@ function DietForm() {
     budget: "mid",
   });
   const { setMealPlanList } = useContext(MealPlanContext);
+  const { showMessage, setLoading } = useContext(NotificationContext);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Data Submitted:", formData);
-    alert("Form submitted successfully!");
-
+    showMessage("Please wait!");
+    setLoading(true);
     try {
       console.log(JSON.stringify(formData)); // delete
       const response = await fetch("http://localhost:5000/getMealPlan", {
@@ -35,19 +36,17 @@ function DietForm() {
         },
         body: JSON.stringify(formData),
       });
-
       if (!response.ok) {
         throw new Error("Failed to submit form data");
       }
-
       const result = await response.json();
-      console.log("Response from server:", result[0].MealPlan);
-      alert("Form submitted successfully!");
-
-      setMealPlanList(result[0].MealPlan);
+      setMealPlanList(JSON.parse(result[0]));
+      setLoading(false);
+      showMessage("Meal plan created. Check your Meal Plan tab");
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("Error submitting form!");
+      setLoading(false);
+      showMessage("ERROR: Submition failed. Please try again!");
     }
   };
 
