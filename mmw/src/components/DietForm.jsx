@@ -57,6 +57,35 @@ function DietForm() {
           "Cook rice separately. Sauté beans with butter, salt, and pepper. Serve beans over rice with a side of orange slices.",
         TotalCalorie: 500,
       },
+      {
+        MealPlanNumber: 1,
+        MealShortName: "Chicken Rice Bowl",
+        MealIconId: 4,
+        Ingredients:
+          "150g Chicken, 200g Rice, 1 Pepper, 1 Green Chili, Salt to taste",
+        HowToMake:
+          "Cook the rice according to package instructions. In a separate pan, cook the chicken until fully done. Add chopped pepper and green chili to the chicken and sauté until they're slightly softened. Serve the chicken mixture over the rice, seasoning with salt.",
+        TotalCalorie: 600,
+      },
+      {
+        MealPlanNumber: 2,
+        MealShortName: "Tuna Salad Sandwich",
+        MealIconId: 8,
+        Ingredients:
+          "100g Tuna, 2 slices Bread, 1 Orange, Salt and Pepper to taste",
+        HowToMake:
+          "Mix tuna with salt and pepper. Spread on one slice of bread, top with the other slice. Serve with an orange on the side.",
+        TotalCalorie: 450,
+      },
+      {
+        MealPlanNumber: 3,
+        MealShortName: "Fruit and Milk Bowl",
+        MealIconId: 1,
+        Ingredients: "1 Apple, 1 Orange, 200ml Milk",
+        HowToMake:
+          "Chop the apple and orange into bite-sized pieces. Combine in a bowl and pour milk over the top.",
+        TotalCalorie: 250,
+      },
     ]);
   };
 
