@@ -4,6 +4,7 @@ import { Navbar, Nav, Container } from "react-bootstrap";
 import { Link, Outlet } from "react-router-dom";
 import MealPlanProvider from "../context/MealPlanContext";
 import { NotificationProvider } from "../context/NotificationContext";
+import { InfoProvider } from "../context/InfoContext";
 
 function Frame() {
   return (
@@ -39,11 +40,13 @@ function Frame() {
       </Navbar>
 
       <Container className="mt-4">
-        <NotificationProvider>
-          <MealPlanProvider>
-            <Outlet />
-          </MealPlanProvider>
-        </NotificationProvider>
+        <InfoProvider>
+          <NotificationProvider>
+            <MealPlanProvider>
+              <Outlet />
+            </MealPlanProvider>
+          </NotificationProvider>
+        </InfoProvider>
       </Container>
     </div>
   );

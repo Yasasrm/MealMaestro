@@ -28,7 +28,6 @@ function DietForm() {
     showMessage("Please wait!");
     setLoading(true);
     try {
-      console.log(JSON.stringify(formData)); // delete
       const response = await fetch("http://localhost:5000/getMealPlan", {
         method: "POST",
         headers: {

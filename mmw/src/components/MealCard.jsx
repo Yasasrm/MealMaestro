@@ -10,6 +10,7 @@ import {
 } from "react-bootstrap";
 import { MealPlanContext } from "../context/MealPlanContext";
 import { NotificationContext } from "../context/NotificationContext";
+import { InfoContext } from "../context/InfoContext";
 
 // MealCard Component
 const MealCard = ({ mealPlan, onCheckboxChange }) => {
@@ -82,6 +83,12 @@ const MealPlanList = () => {
   const { mealPlanList } = useContext(MealPlanContext);
   const { showMessage, setLoading } = useContext(NotificationContext);
   const [selectedMealPlans, setSelectedMealPlans] = useState([]);
+  const { setShow,  setInfoTopic,  setInfoMessage} = useContext(InfoContext);
+  const handleShow = (t, m) => {
+    setInfoTopic(t);
+    setInfoMessage(m);
+    setShow(true);
+  };
 
   const handleCheckboxChange = (mealPlanNumber, isSelected) => {
     if (isSelected) {
@@ -113,6 +120,7 @@ const MealPlanList = () => {
     console.log("Generated shopping list:", ingredients);
     setLoading(false);
     showMessage("Shopping list generated!");
+    handleShow("Shopping list", ingredients);
   };
 
   return (
