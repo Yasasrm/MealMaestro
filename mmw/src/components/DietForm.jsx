@@ -22,13 +22,14 @@ function DietForm() {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+  const API_URL = process.env.REACT_APP_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     showMessage("Please wait!");
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/getMealPlan", {
+      const response = await fetch(`${API_URL}/getMealPlan`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -83,7 +83,7 @@ const MealPlanList = () => {
   const { mealPlanList } = useContext(MealPlanContext);
   const { showMessage, setLoading } = useContext(NotificationContext);
   const [selectedMealPlans, setSelectedMealPlans] = useState([]);
-  const { setShow,  setInfoTopic,  setInfoMessage} = useContext(InfoContext);
+  const { setShow, setInfoTopic, setInfoMessage } = useContext(InfoContext);
   const handleShow = (t, m) => {
     setInfoTopic(t);
     setInfoMessage(m);
@@ -108,19 +108,37 @@ const MealPlanList = () => {
     showMessage("Meal plan saved!");
   };
 
-  const handleGenerateShoppingList = () => {
+  const handleGenerateShoppingList = async () => {
     const selectedMealPlansData = mealPlanList.filter((mealPlan) =>
       selectedMealPlans.includes(mealPlan.MealPlanNumber)
     );
     const ingredients = selectedMealPlansData
       .map((mealPlan) => mealPlan.Ingredients)
       .join(", ");
+    const API_URL = process.env.REACT_APP_API_URL;
+    console.log(ingredients);
     showMessage("Please wait!");
     setLoading(true);
-    console.log("Generated shopping list:", ingredients);
-    setLoading(false);
-    showMessage("Shopping list generated!");
-    handleShow("Shopping list", ingredients);
+    try {
+      const response = await fetch(`${API_URL}/getShoppingList`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ingredients }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to submit form data");
+      }
+      const result = await response.json();
+      setLoading(false);
+      showMessage("Shopping list generated!");
+      handleShow("Shopping list", <pre>{result}</pre>);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      setLoading(false);
+      showMessage("ERROR: Submition failed. Please try again!");
+    }
   };
 
   return (
