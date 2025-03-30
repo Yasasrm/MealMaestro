@@ -19,8 +19,6 @@ async function getAiResponse(requirements) {
 
   const url = "https://api.openai.com/v1/chat/completions";
 
-  console.log(requirements);
-
   const data = {
     model: "gpt-4o-mini",
     store: true,
@@ -106,7 +104,6 @@ app.post("/getMealPlan", async (req, res) => {
     // Call OpenAI API
     const apiResponse = await getAiResponse(dietaryRequirements);
     const mealPlan = apiResponse.choices[0].message.content;
-    console.log(mealPlan);
     const cleanedString = mealPlan
       .replace(/\n\n/g, ",")
       .replace(/\n/g, "")
@@ -129,7 +126,6 @@ app.post("/getShoppingList", async (req, res) => {
     // Call OpenAI API
     const apiResponse = await getAiResponse(dietaryRequirements);
     const shopingList = apiResponse.choices[0].message.content;
-    console.log(shopingList);
     res.json(shopingList);
   } catch (error) {
     res
