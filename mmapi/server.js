@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 // Get Dietary Plan End Point
-async function getDietaryPlan(requirements) {
+async function getAiResponse(requirements) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
     throw new Error("Missing OpenAI API Key in .env file.");
@@ -19,13 +19,18 @@ async function getDietaryPlan(requirements) {
 
   const url = "https://api.openai.com/v1/chat/completions";
 
+  console.log(requirements);
+
   const data = {
     model: "gpt-4o-mini",
     store: true,
     messages: [
       {
         role: "user",
-        content: JSON.stringify(requirements),
+        content:
+          typeof requirements === "object"
+            ? JSON.stringify(requirements)
+            : String(requirements),
       },
     ],
   };
@@ -54,7 +59,7 @@ app.post("/getMealPlan", async (req, res) => {
 
     const dietaryRequirements = {
       Requirement:
-        "I need a dietary plan for the following requirements. Give results according to the ResultsNeededFormat only. Result should be a JSON array in String format, Do not put any aditional characters that are not related to the JSON like ```json, eg: \"[{},{},{}]\"",
+        'I need a dietary plan for the following requirements. Give results according to the ResultsNeededFormat only. Result should be a JSON array in String format, Do not put any aditional characters that are not related to the JSON like ```json, eg: "[{},{},{}]"',
       Requirements: {
         Age: userInput.age || "",
         Weight: `${userInput.weight}kg` || "",
@@ -99,7 +104,7 @@ app.post("/getMealPlan", async (req, res) => {
     };
 
     // Call OpenAI API
-    const apiResponse = await getDietaryPlan(dietaryRequirements);
+    const apiResponse = await getAiResponse(dietaryRequirements);
     const mealPlan = apiResponse.choices[0].message.content;
     console.log(mealPlan);
     const cleanedString = mealPlan
@@ -108,6 +113,24 @@ app.post("/getMealPlan", async (req, res) => {
       .replace(/,\s*$/, "");
     const jsonArrayString = `[${cleanedString}]`;
     res.json(JSON.parse(jsonArrayString));
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Error generating meal plan", details: error.message });
+  }
+});
+
+app.post("/getShoppingList", async (req, res) => {
+  try {
+    const userInput = req.body;
+
+    const dietaryRequirements = `I want to buy goods for the recipe ingredients list from the supermarket. Generated shopping list for these items. round up some quantities to match standard portions. Do not add any information other than a shopping list in the results. Ingredients: ${userInput.ingredients}`;
+
+    // Call OpenAI API
+    const apiResponse = await getAiResponse(dietaryRequirements);
+    const shopingList = apiResponse.choices[0].message.content;
+    console.log(shopingList);
+    res.json(shopingList);
   } catch (error) {
     res
       .status(500)
