@@ -62,9 +62,9 @@ const MealCard = ({ mealPlan, onCheckboxChange }) => {
         </Modal.Header>
         <Modal.Body>
           <h5>Ingredients:</h5>
-          <p>{mealPlan.Ingredients}</p>
+          <pre>{mealPlan.Ingredients.replace(/, /g, ",\n")}</pre>
           <h5>How to Make:</h5>
-          <p>{mealPlan.HowToMake}</p>
+          <pre>{mealPlan.HowToMake.replace(/(\d\.)/g, "\n$1")}</pre>
           <h5>Total Calories:</h5>
           <p>{mealPlan.TotalCalorie} kcal</p>
         </Modal.Body>
