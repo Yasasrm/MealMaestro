@@ -57,7 +57,7 @@ app.post("/getMealPlan", async (req, res) => {
 
     const dietaryRequirements = {
       Requirement:
-        'I need a dietary plan for the following requirements. Give results according to the ResultsNeededFormat only. Result should be a JSON array in String format, Do not put any aditional characters that are not related to the JSON like ```json, eg: "[{},{},{}]"',
+        'I need a dietary plan for the following requirements. Give results according to the ResultsNeededFormat only. Result should be a JSON in String format, Do not put any aditional characters that are not related to the JSON like ```json, eg: "MealArray:[{},{},{}],instruction:"some instruction""',
       Requirements: {
         Age: userInput.age || "",
         Weight: `${userInput.weight}kg` || "",
@@ -68,6 +68,7 @@ app.post("/getMealPlan", async (req, res) => {
         Gender: userInput.gender || "",
         ActivityLevel: userInput.activity || "",
         PreferredDietType: userInput.diet || "",
+        PreferredCuisine: userInput.cuisine || "",
         HealthGoal: userInput.goal || "",
         Budget: userInput.budget || "",
         AvailableIngredients: ["any"], // Default
@@ -92,23 +93,39 @@ app.post("/getMealPlan", async (req, res) => {
         ],
       },
       ResultNeededFormat: {
-        MealPlanNumber: "number",
-        MealShortName: "Short name for this meal",
-        MealIconId: "Suitable Icon id from the given Icons",
-        Ingredients: "Ingredients With Quantity as a comma separated string",
-        HowToMake: "How To Make",
-        TotalCalorie: "Total Calories",
+        MealArray: [
+          {
+            MealPlanNumber: "number",
+            MealShortName: "Short name for this meal",
+            MealIconId: "Suitable Icon id from the given Icons",
+            Ingredients:
+              "Ingredients With Quantity as a comma separated string",
+            HowToMake: "1.How 2.To 3.Make ...",
+            TotalCalorie:
+              "Total Calories (Breakdown of Macronutrients - Carbohydrates, Proteins, Fats)",
+          },
+        ],
+        instruction:
+          "Give details about proposed meal plan, Depending on the BMR and the HealthGoal how many Macronutrients(Carbohydrates, Proteins, Fats) are recommended and in this proposed meal plan how many Macronutrients are included? What is the total calorie of this meal plan?",
+        NutrientsArray: [
+          "TotalCalorie in kcal",
+          "Carbohydrates in grams",
+          "Proteins in grams",
+          "Fats in grams",
+        ],
       },
     };
 
     // Call OpenAI API
     const apiResponse = await getAiResponse(dietaryRequirements);
     const mealPlan = apiResponse.choices[0].message.content;
+    console.log(mealPlan);
     const cleanedString = mealPlan
       .replace(/\n\n/g, ",")
       .replace(/\n/g, "")
       .replace(/,\s*$/, "");
     const jsonArrayString = `[${cleanedString}]`;
+    console.log(jsonArrayString);
     res.json(JSON.parse(jsonArrayString));
   } catch (error) {
     res
