@@ -11,6 +11,8 @@ import {
 import { MealPlanContext } from "../context/MealPlanContext";
 import { NotificationContext } from "../context/NotificationContext";
 import { InfoContext } from "../context/InfoContext";
+import { UserContext } from "../context/UserContext";
+import QuickInput from "./QuickInput";
 
 // MealCard Component
 const MealCard = ({ mealPlan, onCheckboxChange }) => {
@@ -80,14 +82,21 @@ const MealCard = ({ mealPlan, onCheckboxChange }) => {
 
 // MealPlanList Component
 const MealPlanList = () => {
+  const [selectedMealPlans, setSelectedMealPlans] = useState([]);
   const { mealPlanList } = useContext(MealPlanContext);
   const { showMessage, setLoading } = useContext(NotificationContext);
-  const [selectedMealPlans, setSelectedMealPlans] = useState([]);
   const { setShow, setInfoTopic, setInfoMessage } = useContext(InfoContext);
+  const { suggestedPlan } = useContext(MealPlanContext);
+  const { isCurentMealPlanSaved, setIsCurentMealPlanSaved } = useContext(UserContext);
   const handleShow = (t, m) => {
     setInfoTopic(t);
     setInfoMessage(m);
     setShow(true);
+  };
+  const handleClose = () => {
+    setInfoTopic("");
+    setInfoMessage("");
+    setShow(false);
   };
 
   const handleCheckboxChange = (mealPlanNumber, isSelected) => {
@@ -100,12 +109,21 @@ const MealPlanList = () => {
     }
   };
 
+  const saveMealPlan = (name, data) => {
+    console.log(`${data} saved as ${name}`);
+    setIsCurentMealPlanSaved(true);
+  };
+
   const handleSave = () => {
-    showMessage("Please wait!");
-    setLoading(true);
-    console.log("Saving meal plans:", selectedMealPlans);
-    setLoading(false);
-    showMessage("Meal plan saved!");
+    handleShow(
+      "Save meal plan",
+      <QuickInput
+        textLabel={"Meal plan name"}
+        dataToProcess={suggestedPlan}
+        processingFunction={saveMealPlan}
+        exitFunction={handleClose}
+      />
+    );
   };
 
   const handleGenerateShoppingList = async () => {
@@ -141,15 +159,15 @@ const MealPlanList = () => {
     }
   };
 
+  const handleShowInfo = () => {
+    setShow(true);
+  };
+
   return (
     <div className="container mt-5">
       <div className="mb-4 text-center">
         <ButtonGroup aria-label="MealListButtons">
-          <Button
-            variant="secondary"
-            onClick={handleSave}
-            disabled={selectedMealPlans.length === 0}
-          >
+          <Button variant="secondary" onClick={handleSave} disabled={isCurentMealPlanSaved}>
             Save
           </Button>
           <Button
@@ -159,6 +177,9 @@ const MealPlanList = () => {
             className="ml-3"
           >
             Generate Shopping List
+          </Button>
+          <Button variant="secondary" onClick={handleShowInfo} className="ml-3">
+            Info
           </Button>
         </ButtonGroup>
       </div>

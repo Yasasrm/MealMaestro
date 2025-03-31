@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState } from 'react';
 import Info from '../components/Info';
 
 export const InfoContext = createContext();
@@ -14,8 +14,4 @@ export function InfoProvider({ children }) {
       <Info />
     </InfoContext.Provider>
   );
-}
-
-export function useOffcanvas() {
-  return useContext(InfoContext);
 }

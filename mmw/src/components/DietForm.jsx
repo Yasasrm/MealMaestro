@@ -1,28 +1,39 @@
 import React, { useContext, useState } from "react";
 import { MealPlanContext } from "../context/MealPlanContext";
 import { NotificationContext } from "../context/NotificationContext";
+import { InfoContext } from "../context/InfoContext";
+import { UserContext } from "../context/UserContext";
 
 function DietForm() {
+  const { uname, uAge, uGender, uWeight, uHeight, uActivity, uAllergy, uGoal, setIsCurentMealPlanSaved } =
+    useContext(UserContext);
   const [formData, setFormData] = useState({
-    name: "",
-    age: "",
-    gender: "male",
-    weight: "",
-    height: "",
-    activity: "sedentary",
+    name: uname,
+    age: uAge,
+    gender: uGender,
+    weight: uWeight,
+    height: uHeight,
+    activity: uActivity,
     diet: "none",
-    allergies: "",
+    cuisine: "none",
+    allergies: uAllergy,
     restrictions: "",
-    goal: "weight_loss",
+    goal: uGoal,
     meals: "",
     budget: "mid",
   });
-  const { setMealPlanList } = useContext(MealPlanContext);
+  const { setMealPlanList, setSuggestedPlan } = useContext(MealPlanContext);
   const { showMessage, setLoading } = useContext(NotificationContext);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   const API_URL = process.env.REACT_APP_API_URL;
+  const { setShow, setInfoTopic, setInfoMessage } = useContext(InfoContext);
+  const handleSetInfo = (t, m) => {
+    setInfoTopic(t);
+    setInfoMessage(m);
+    setShow(false);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,9 +51,13 @@ function DietForm() {
         throw new Error("Failed to submit form data");
       }
       const result = await response.json();
-      setMealPlanList(JSON.parse(result[0]));
+      console.log(result);
+      setSuggestedPlan(result[0]);
+      setMealPlanList(result[0].MealArray);
       setLoading(false);
       showMessage("Meal plan created. Check your Meal Plan tab");
+      handleSetInfo("About this meal plan", <p>{result[0].instruction}</p>);
+      setIsCurentMealPlanSaved(false);
     } catch (error) {
       console.error("Error submitting form:", error);
       setLoading(false);
@@ -132,6 +147,25 @@ function DietForm() {
               { value: "keto", label: "Keto" },
               { value: "paleo", label: "Paleo" },
               { value: "mediterranean", label: "Mediterranean" },
+              { value: "none", label: "No Preference" },
+            ],
+          },
+          {
+            label: "Preferred Cuisine",
+            name: "cuisine",
+            options: [
+              { value: "italian", label: "Italian" },
+              { value: "greek", label: "Greek" },
+              { value: "mexican", label: "Mexican" },
+              { value: "japanese", label: "Japanese" },
+              { value: "indian", label: "Indian" },
+              { value: "french", label: "French" },
+              { value: "chinese", label: "Chinese" },
+              { value: "spanish", label: "Spanish" },
+              { value: "thai", label: "Thai" },
+              { value: "turkish", label: "Turkish" },
+              { value: "american", label: "American" },
+              { value: "korean", label: "Korean" },
               { value: "none", label: "No Preference" },
             ],
           },
