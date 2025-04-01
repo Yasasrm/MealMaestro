@@ -22,7 +22,7 @@ function DietForm() {
     meals: "",
     budget: "mid",
   });
-  const { setMealPlanList, setSuggestedPlan } = useContext(MealPlanContext);
+  const { setSuggestedPlan } = useContext(MealPlanContext);
   const { showMessage, setLoading } = useContext(NotificationContext);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -53,7 +53,6 @@ function DietForm() {
       const result = await response.json();
       console.log(result);
       setSuggestedPlan(result[0]);
-      setMealPlanList(result[0].MealArray);
       setLoading(false);
       showMessage("Meal plan created. Check your Meal Plan tab");
       handleSetInfo("About this meal plan", <p>{result[0].instruction}</p>);

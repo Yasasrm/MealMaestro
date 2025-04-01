@@ -83,10 +83,9 @@ const MealCard = ({ mealPlan, onCheckboxChange }) => {
 // MealPlanList Component
 const MealPlanList = () => {
   const [selectedMealPlans, setSelectedMealPlans] = useState([]);
-  const { mealPlanList } = useContext(MealPlanContext);
+  const { suggestedPlan } = useContext(MealPlanContext);
   const { showMessage, setLoading } = useContext(NotificationContext);
   const { setShow, setInfoTopic, setInfoMessage } = useContext(InfoContext);
-  const { suggestedPlan } = useContext(MealPlanContext);
   const { isCurentMealPlanSaved, setIsCurentMealPlanSaved } = useContext(UserContext);
   const handleShow = (t, m) => {
     setInfoTopic(t);
@@ -127,7 +126,7 @@ const MealPlanList = () => {
   };
 
   const handleGenerateShoppingList = async () => {
-    const selectedMealPlansData = mealPlanList.filter((mealPlan) =>
+    const selectedMealPlansData = suggestedPlan.MealArray.filter((mealPlan) =>
       selectedMealPlans.includes(mealPlan.MealPlanNumber)
     );
     const ingredients = selectedMealPlansData
@@ -184,7 +183,7 @@ const MealPlanList = () => {
         </ButtonGroup>
       </div>
       <Row className="justify-content-center">
-        {mealPlanList.map((mealPlan) => (
+        {suggestedPlan.MealArray&&suggestedPlan.MealArray.map((mealPlan) => (
           <Col
             sm={12}
             md={6}

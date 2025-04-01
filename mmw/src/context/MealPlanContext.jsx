@@ -2,11 +2,10 @@ import React, { createContext, useState } from 'react'
 export const MealPlanContext = createContext();
 
 export const MealPlanProvider = ({children}) => {
-    const [mealPlanList, setMealPlanList] = useState([]);
     const [suggestedPlan, setSuggestedPlan] = useState([]);
   
     return (
-      <MealPlanContext.Provider value={{ mealPlanList, setMealPlanList, suggestedPlan, setSuggestedPlan }}>
+      <MealPlanContext.Provider value={{ suggestedPlan, setSuggestedPlan }}>
         {children}
       </MealPlanContext.Provider>
     );
