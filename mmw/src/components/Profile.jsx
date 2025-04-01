@@ -4,6 +4,31 @@ import { NotificationContext } from "../context/NotificationContext";
 import { UserContext } from "../context/UserContext";
 
 function Profile() {
+  const { showMessage, setLoading } = useContext(NotificationContext);
+  const {
+    uemail,
+    setUEmail,
+    uname,
+    setUname,
+    isAuth,
+    setIsAuth,
+    uBday,
+    setUBday,
+    setUAge,
+    uGender,
+    setUGender,
+    uWeight,
+    setUWeight,
+    uHeight,
+    setUHeight,
+    uActivity,
+    setUActivity,
+    uAllergy,
+    setUAllergy,
+    uGoal,
+    setUGoal,
+  } = useContext(UserContext);
+
   const [activeTab, setActiveTab] = useState("login");
   const [formData, setFormData] = useState({
     email: "",
@@ -11,33 +36,16 @@ function Profile() {
     name: "",
   });
   const [profile, setProfile] = useState({
-    email: "",
-    name: "",
-    birthday: "",
-    gender: "male",
-    weight: "",
-    height: "",
-    activity: "sedentary",
-    allergy: "",
-    goal: "weight_loss",
+    email: uemail || "",
+    name: uname || "",
+    birthday: uBday || "",
+    gender: uGender || "male",
+    weight: uWeight || "",
+    height: uHeight || "",
+    activity: uActivity || "sedentary",
+    allergy: uAllergy || "",
+    goal: uGoal || "weight_loss",
   });
-  const { showMessage, setLoading } = useContext(NotificationContext);
-  const {
-    uemail,
-    setUEmail,
-    setUname,
-    isAuth,
-    setIsAuth,
-    uBday,
-    setUBday,
-    setUAge,
-    setUGender,
-    setUWeight,
-    setUHeight,
-    setUActivity,
-    setUAllergy,
-    setUGoal,
-  } = useContext(UserContext);
 
   const API_URL = process.env.REACT_APP_API_URL;
 
@@ -61,11 +69,10 @@ function Profile() {
       if (!response.ok) {
         throw new Error(data.message || "ERROR: Something went wrong");
       }
-      setProfile((prev) => ({
-        ...prev,
+      setProfile(() => ({
         email: data.user.email,
         name: data.user.name,
-        birthday: data.user.birthday,
+        birthday: data.user.birthday.split("T")[0],
         gender: data.user.gender,
         weight: data.user.weight,
         height: data.user.height,
@@ -75,8 +82,8 @@ function Profile() {
       }));
       setUname(data.user.name);
       setUEmail(data.user.email);
-      setUBday(data.user.birthday);
-      setUAge(data.user.birthday && getAge(data.user.birthday));
+      setUBday(data.user.birthday.split("T")[0]);
+      setUAge(data.user.birthday && getAge(data.user.birthday.split("T")[0]));
       setUGender(data.user.gender);
       setUWeight(data.user.weight);
       setUHeight(data.user.height);
@@ -117,16 +124,14 @@ function Profile() {
       const result = await response.json();
       setUname(result.user.name);
       setUEmail(result.user.email);
-      setUBday(result.user.birthday);
-      setUAge(result.user.birthday && getAge(result.user.birthday));
+      setUBday(result.user.birthday.split("T")[0]);
+      setUAge(result.user.birthday && getAge(result.user.birthday.split("T")[0]));
       setUGender(result.user.gender);
       setUWeight(result.user.weight);
       setUHeight(result.user.height);
       setUActivity(result.user.activity);
       setUAllergy(result.user.allergy);
       setUGoal(result.user.goal);
-      console.log("Profile.jsx -> line 127");
-      console.log(result.user);
       setLoading(false);
       showMessage("Profile saved successfully:", result.message);
       return result;
@@ -252,7 +257,7 @@ function Profile() {
               <Form.Control
                 type="date"
                 name="birthday"
-                value={profile.birthday || uBday}
+                value={profile.birthday}
                 onChange={handleProfileChange}
               />
             </Form.Group>
@@ -300,7 +305,7 @@ function Profile() {
               </Form.Select>
             </Form.Group>
             <Form.Group>
-              <Form.Label>Allergies</Form.Label>
+              <Form.Label>Allergies (comma-separated)</Form.Label>
               <Form.Control
                 type="text"
                 name="allergy"
