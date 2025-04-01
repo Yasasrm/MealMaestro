@@ -40,7 +40,7 @@ function DietForm() {
     showMessage("Please wait!");
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/getMealPlan`, {
+      const response = await fetch(`${API_URL}/api/ai/getMealPlan`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -138,7 +138,7 @@ const MealPlanList = () => {
     showMessage("Please wait!");
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/getShoppingList`, {
+      const response = await fetch(`${API_URL}/api/ai/getShoppingList`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

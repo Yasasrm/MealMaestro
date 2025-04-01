@@ -4,9 +4,9 @@ const jwt = require("jsonwebtoken");
 const pool = require("../db");
 require("dotenv").config();
 
-const router = express.Router();
+const userRouts = express.Router();
 
-router.post("/register", async (req, res) => {
+userRouts.post("/register", async (req, res) => {
   const { email, name, password } = req.body;
 
   try {
@@ -35,7 +35,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
-router.post("/login", async (req, res) => {
+userRouts.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -64,7 +64,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.post("/saveProfile", async (req, res) => {
+userRouts.post("/saveProfile", async (req, res) => {
   const {
     name,
     birthday,
@@ -107,4 +107,4 @@ router.post("/saveProfile", async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = userRouts;
