@@ -64,4 +64,47 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.post("/saveProfile", async (req, res) => {
+  const {
+    name,
+    birthday,
+    gender,
+    weight,
+    height,
+    activity,
+    allergy,
+    goal,
+    email,
+  } = req.body;
+
+  try {
+    // need to add goal, tcal, tcarb, tpro, tfat
+    const query = `
+      UPDATE mm.users SET name = $1,  birthday = $2, gender =$3 , weight = $4, height = $5, activity = $6 , allergy = $7, goal = $8
+	    WHERE email = $9
+      RETURNING *;
+    `;
+
+    const values = [
+      name,
+      birthday,
+      gender,
+      weight,
+      height,
+      activity,
+      allergy,
+      goal,
+      email,
+    ];
+    console.log(values);
+    const result = await pool.query(query, values);
+    res
+      .status(201)
+      .json({ message: "User profile saved", user: result.rows[0] });
+  } catch (error) {
+    console.error("Database error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 module.exports = router;

@@ -13,48 +13,42 @@ function Profile() {
   const [profile, setProfile] = useState({
     email: "",
     name: "",
-    bday: "",
+    birthday: "",
     gender: "male",
     weight: "",
     height: "",
     activity: "sedentary",
-    allergies: "",
+    allergy: "",
     goal: "weight_loss",
   });
   const { showMessage, setLoading } = useContext(NotificationContext);
   const {
     uemail,
     setUEmail,
-    uname,
     setUname,
     isAuth,
     setIsAuth,
     uBday,
     setUBday,
     setUAge,
-    uGender,
     setUGender,
-    uWeight,
     setUWeight,
-    uHeight,
     setUHeight,
-    uActivity,
     setUActivity,
-    uAllergy,
     setUAllergy,
-    uGoal,
     setUGoal,
   } = useContext(UserContext);
+
+  const API_URL = process.env.REACT_APP_API_URL;
 
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
     showMessage("Please wait!");
     setLoading(true);
-    const apiUrl = process.env.REACT_APP_API_URL;
     const endpoint =
       activeTab === "login" ? "/api/users/login" : "/api/users/register";
     try {
-      const response = await fetch(`${apiUrl}${endpoint}`, {
+      const response = await fetch(`${API_URL}${endpoint}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -67,11 +61,17 @@ function Profile() {
       if (!response.ok) {
         throw new Error(data.message || "ERROR: Something went wrong");
       }
-      console.log(data);
       setProfile((prev) => ({
         ...prev,
         email: data.user.email,
         name: data.user.name,
+        birthday: data.user.birthday,
+        gender: data.user.gender,
+        weight: data.user.weight,
+        height: data.user.height,
+        activity: data.user.activity,
+        allergy: data.user.allergy,
+        goal: data.user.goal,
       }));
       setUname(data.user.name);
       setUEmail(data.user.email);
@@ -97,17 +97,44 @@ function Profile() {
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };
 
-  const handleSaveProfile = () => {
-    setUBday(profile.bday||uBday);
-    setUAge(getAge(profile.bday||uBday));
-    setUGender(profile.gender||uGender);
-    setUWeight(profile.weight||uWeight);
-    setUHeight(profile.height||uHeight);
-    setUActivity(profile.activity||uActivity);
-    setUAllergy(profile.allergies||uAllergy);
-    setUGoal(profile.goal||uGoal);
-    console.log(profile);
-    showMessage("Profile updated successfully!");
+  const handleSaveProfile = async () => {
+    profile.email = uemail;
+    showMessage("Please wait!");
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/api/users/saveProfile`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(profile),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save profile");
+      }
+
+      const result = await response.json();
+      setUname(result.user.name);
+      setUEmail(result.user.email);
+      setUBday(result.user.birthday);
+      setUAge(result.user.birthday && getAge(result.user.birthday));
+      setUGender(result.user.gender);
+      setUWeight(result.user.weight);
+      setUHeight(result.user.height);
+      setUActivity(result.user.activity);
+      setUAllergy(result.user.allergy);
+      setUGoal(result.user.goal);
+      console.log("Profile.jsx -> line 127");
+      console.log(result.user);
+      setLoading(false);
+      showMessage("Profile saved successfully:", result.message);
+      return result;
+    } catch (error) {
+      setLoading(false);
+      showMessage("ERROR: Failed to save profile:", error);
+      return null;
+    }
   };
 
   const getAge = (birthday) => {
@@ -209,18 +236,14 @@ function Profile() {
           <Form>
             <Form.Group>
               <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                value={profile.email || uemail}
-                disabled
-              />
+              <Form.Control type="email" value={profile.email} disabled />
             </Form.Group>
             <Form.Group>
               <Form.Label>Name</Form.Label>
               <Form.Control
                 type="text"
                 name="name"
-                value={profile.name || uname}
+                value={profile.name}
                 onChange={handleProfileChange}
               />
             </Form.Group>
@@ -228,8 +251,8 @@ function Profile() {
               <Form.Label>Birthday</Form.Label>
               <Form.Control
                 type="date"
-                name="bday"
-                value={profile.bday || uBday}
+                name="birthday"
+                value={profile.birthday || uBday}
                 onChange={handleProfileChange}
               />
             </Form.Group>
@@ -237,7 +260,7 @@ function Profile() {
               <Form.Label>Gender</Form.Label>
               <Form.Select
                 name="gender"
-                value={profile.gender || uGender}
+                value={profile.gender}
                 onChange={handleProfileChange}
               >
                 <option value="male">Male</option>
@@ -250,7 +273,7 @@ function Profile() {
               <Form.Control
                 type="number"
                 name="weight"
-                value={profile.weight || uWeight}
+                value={profile.weight}
                 onChange={handleProfileChange}
               />
             </Form.Group>
@@ -259,7 +282,7 @@ function Profile() {
               <Form.Control
                 type="number"
                 name="height"
-                value={profile.height || uHeight}
+                value={profile.height}
                 onChange={handleProfileChange}
               />
             </Form.Group>
@@ -267,7 +290,7 @@ function Profile() {
               <Form.Label>Activity Level</Form.Label>
               <Form.Select
                 name="activity"
-                value={profile.activity || uActivity}
+                value={profile.activity}
                 onChange={handleProfileChange}
               >
                 <option value="sedentary">Sedentary</option>
@@ -280,8 +303,8 @@ function Profile() {
               <Form.Label>Allergies</Form.Label>
               <Form.Control
                 type="text"
-                name="allergies"
-                value={profile.allergies || uAllergy}
+                name="allergy"
+                value={profile.allergy}
                 onChange={handleProfileChange}
               />
             </Form.Group>
@@ -289,7 +312,7 @@ function Profile() {
               <Form.Label>Health Goal</Form.Label>
               <Form.Select
                 name="goal"
-                value={profile.goal || uGoal}
+                value={profile.goal}
                 onChange={handleProfileChange}
               >
                 <option value="weight_loss">Weight Loss</option>

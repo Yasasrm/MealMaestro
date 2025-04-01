@@ -86,7 +86,8 @@ const MealPlanList = () => {
   const { suggestedPlan } = useContext(MealPlanContext);
   const { showMessage, setLoading } = useContext(NotificationContext);
   const { setShow, setInfoTopic, setInfoMessage } = useContext(InfoContext);
-  const { isCurentMealPlanSaved, setIsCurentMealPlanSaved } = useContext(UserContext);
+  const { isCurentMealPlanSaved, setIsCurentMealPlanSaved } =
+    useContext(UserContext);
   const handleShow = (t, m) => {
     setInfoTopic(t);
     setInfoMessage(m);
@@ -166,7 +167,11 @@ const MealPlanList = () => {
     <div className="container mt-5">
       <div className="mb-4 text-center">
         <ButtonGroup aria-label="MealListButtons">
-          <Button variant="secondary" onClick={handleSave} disabled={isCurentMealPlanSaved}>
+          <Button
+            variant="secondary"
+            onClick={handleSave}
+            disabled={!suggestedPlan.MealArray || isCurentMealPlanSaved}
+          >
             Save
           </Button>
           <Button
@@ -183,21 +188,22 @@ const MealPlanList = () => {
         </ButtonGroup>
       </div>
       <Row className="justify-content-center">
-        {suggestedPlan.MealArray&&suggestedPlan.MealArray.map((mealPlan) => (
-          <Col
-            sm={12}
-            md={6}
-            lg={4}
-            xl={3}
-            key={mealPlan.MealPlanNumber}
-            className="mb-4"
-          >
-            <MealCard
-              mealPlan={mealPlan}
-              onCheckboxChange={handleCheckboxChange}
-            />
-          </Col>
-        ))}
+        {suggestedPlan.MealArray &&
+          suggestedPlan.MealArray.map((mealPlan) => (
+            <Col
+              sm={12}
+              md={6}
+              lg={4}
+              xl={3}
+              key={mealPlan.MealPlanNumber}
+              className="mb-4"
+            >
+              <MealCard
+                mealPlan={mealPlan}
+                onCheckboxChange={handleCheckboxChange}
+              />
+            </Col>
+          ))}
       </Row>
     </div>
   );
