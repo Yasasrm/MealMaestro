@@ -86,8 +86,8 @@ const MealPlanList = () => {
   const { suggestedPlan } = useContext(MealPlanContext);
   const { showMessage, setLoading } = useContext(NotificationContext);
   const { setShow, setInfoTopic, setInfoMessage } = useContext(InfoContext);
-  const { isCurentMealPlanSaved, setIsCurentMealPlanSaved } =
-    useContext(UserContext);
+  const { isCurentMealPlanSaved, setIsCurentMealPlanSaved, uemail } = useContext(UserContext);
+  const API_URL = process.env.REACT_APP_API_URL;
   const handleShow = (t, m) => {
     setInfoTopic(t);
     setInfoMessage(m);
@@ -109,9 +109,31 @@ const MealPlanList = () => {
     }
   };
 
-  const saveMealPlan = (name, data) => {
-    console.log(`${data} saved as ${name}`);
-    setIsCurentMealPlanSaved(true);
+  const saveMealPlan = async (name, data) => {
+    setLoading(true);
+    console.log({ email: uemail, meals: data, plan: name });
+    try {
+      const response = await fetch(`${API_URL}/api/meals/save`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: uemail, meals: data, plan: name }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to submit form data");
+      }
+      const result = await response.json();
+      console.log(result.mealPlan.meals);
+      setIsCurentMealPlanSaved(true);
+      setLoading(false);
+      showMessage("Meal plan saved!");
+    } catch (error) {
+      setIsCurentMealPlanSaved(false);
+      console.error("Error submitting form:", error);
+      setLoading(false);
+      showMessage("ERROR: Submition failed. Please try again!");
+    }
   };
 
   const handleSave = () => {
@@ -133,7 +155,6 @@ const MealPlanList = () => {
     const ingredients = selectedMealPlansData
       .map((mealPlan) => mealPlan.Ingredients)
       .join(", ");
-    const API_URL = process.env.REACT_APP_API_URL;
     console.log(ingredients);
     showMessage("Please wait!");
     setLoading(true);

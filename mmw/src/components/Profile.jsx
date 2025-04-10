@@ -84,7 +84,7 @@ function Profile() {
       setProfile(() => ({
         email: data.user.email,
         name: data.user.name,
-        birthday: data.user.birthday.split("T")[0],
+        birthday: data.user.birthday && data.user.birthday.split("T")[0],
         gender: data.user.gender,
         weight: data.user.weight,
         height: data.user.height,
@@ -98,7 +98,7 @@ function Profile() {
       }));
       setUname(data.user.name);
       setUEmail(data.user.email);
-      setUBday(data.user.birthday.split("T")[0]);
+      setUBday(data.user.birthday && data.user.birthday.split("T")[0]);
       setUAge(data.user.birthday && getAge(data.user.birthday.split("T")[0]));
       setUGender(data.user.gender);
       setUWeight(data.user.weight);

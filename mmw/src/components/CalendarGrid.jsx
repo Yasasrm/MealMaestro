@@ -1,17 +1,29 @@
 import React, { useState, useEffect, useContext } from "react";
 import { InfoContext } from "../context/InfoContext";
+import MealPlanLogger from "./MealPlanLogger";
 
 const fetchDayStatus = async (year, month) => {
   return new Promise((resolve) => {
     const statuses = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     for (let i = 1; i <= 31; i++) {
-      const status = ["yellow", "red", "green"][Math.floor(Math.random() * 4)];
+      const date = new Date(year, month, i);
+
+      if (date >= today) {
+        continue;
+      }
+
+      const status = ["yellow", "red", "green"][Math.floor(Math.random() * 3)];
       statuses.push({ day: i, status });
     }
+
     console.log(statuses);
     resolve(statuses);
   });
 };
+
 
 const CalendarGrid = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -80,7 +92,7 @@ const CalendarGrid = () => {
     if (day) {
       const clickedDate = new Date(selectedYear, selectedMonth, day);
       const status = getDayStatus(day);
-      status?handleShow("Not null", `You clicked on ${clickedDate.toDateString()}`):handleShow("null", `You clicked on ${clickedDate.toDateString()}`);
+      status?handleShow(`${clickedDate.toDateString()}`, "Your calorie consumption"):handleShow(`${clickedDate.toDateString()}`, <MealPlanLogger/>);
     }
   };
   const getDayStatus = (day) => {
