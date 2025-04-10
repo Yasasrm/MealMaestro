@@ -1,14 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
+import CalendarGrid from "./CalendarGrid";
+import { UserContext } from "../context/UserContext";
 
 function Home() {
+  const { isAuth } = useContext(UserContext);
   return (
-    <>
-      <h2>Welcome to Meal Maestro</h2>
-      <p>
-        Get started by filling out your dietary requirements to receive a
-        personalized meal plan. If you are new, First go to the profile and create an account so you can save your preferences.
-      </p>
-    </>
+    isAuth ? <CalendarGrid/> : <h1>Please create a profile</h1>
   );
 }
 

@@ -74,14 +74,17 @@ userRouts.post("/saveProfile", async (req, res) => {
     activity,
     allergy,
     goal,
+    tcal,
+    tcarb,
+    tpro,
+    tfat,
     email,
   } = req.body;
 
   try {
-    // need to add goal, tcal, tcarb, tpro, tfat
     const query = `
-      UPDATE mm.users SET name = $1,  birthday = $2, gender =$3 , weight = $4, height = $5, activity = $6 , allergy = $7, goal = $8
-	    WHERE email = $9
+      UPDATE mm.users SET name = $1,  birthday = $2, gender =$3 , weight = $4, height = $5, activity = $6 , allergy = $7, goal = $8, tcal = $9, tcarb  = $10, tpro = $11, tfat = $12
+	    WHERE email = $13
       RETURNING *;
     `;
 
@@ -94,6 +97,10 @@ userRouts.post("/saveProfile", async (req, res) => {
       activity,
       allergy,
       goal,
+      tcal,
+      tcarb,
+      tpro,
+      tfat,
       email,
     ];
     console.log(values);

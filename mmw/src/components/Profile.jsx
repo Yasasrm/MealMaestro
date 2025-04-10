@@ -27,6 +27,14 @@ function Profile() {
     setUAllergy,
     uGoal,
     setUGoal,
+    uTcal,
+    setUTcal,
+    uTcarb,
+    setUTcarb,
+    uTpro,
+    setUTpro,
+    uTfat,
+    setUTfat,
   } = useContext(UserContext);
 
   const [activeTab, setActiveTab] = useState("login");
@@ -45,6 +53,10 @@ function Profile() {
     activity: uActivity || "sedentary",
     allergy: uAllergy || "",
     goal: uGoal || "weight_loss",
+    tcal: uTcal || "",
+    tcarb: uTcarb || "",
+    tpro: uTpro || "",
+    tfat: uTfat || "",
   });
 
   const API_URL = process.env.REACT_APP_API_URL;
@@ -79,6 +91,10 @@ function Profile() {
         activity: data.user.activity,
         allergy: data.user.allergy,
         goal: data.user.goal,
+        tcal: data.user.uTcal,
+        tcarb: data.user.uTcarb,
+        tpro: data.user.uTpro,
+        tfat: data.user.uTfat,
       }));
       setUname(data.user.name);
       setUEmail(data.user.email);
@@ -90,6 +106,10 @@ function Profile() {
       setUActivity(data.user.activity);
       setUAllergy(data.user.allergy);
       setUGoal(data.user.goal);
+      setUTcal(data.user.uTcal);
+      setUTcarb(data.user.uTcarb);
+      setUTpro(data.user.uTpro);
+      setUTfat(data.user.uTfat);
       setIsAuth(true);
       localStorage.setItem("token", data.token);
       setLoading(false);
@@ -105,39 +125,60 @@ function Profile() {
   };
 
   const handleSaveProfile = async () => {
-    profile.email = uemail;
-    showMessage("Please wait!");
+    const updatedProfile = { ...profile, email: uemail };
+
+    showMessage("Please wait...");
     setLoading(true);
+
     try {
-      const response = await fetch(`${API_URL}/api/users/saveProfile`, {
+      const apiCalResponse = await fetch(`${API_URL}/api/ai/getUserTarget`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(profile),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedProfile),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to save profile");
-      }
+      if (!apiCalResponse.ok) throw new Error("Failed to fetch target");
+
+      const resultTarget = await apiCalResponse.json();
+
+      const finalProfile = {
+        ...updatedProfile,
+        tcal: resultTarget[0].Calorie,
+        tcarb: resultTarget[0].Carbohydrates,
+        tpro: resultTarget[0].Proteins,
+        tfat: resultTarget[0].Fats,
+      };
+
+      setProfile(finalProfile);
+
+      const response = await fetch(`${API_URL}/api/users/saveProfile`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(finalProfile),
+      });
+
+      if (!response.ok) throw new Error("Failed to save profile");
 
       const result = await response.json();
-      setUname(result.user.name);
-      setUEmail(result.user.email);
-      setUBday(result.user.birthday.split("T")[0]);
-      setUAge(result.user.birthday && getAge(result.user.birthday.split("T")[0]));
-      setUGender(result.user.gender);
-      setUWeight(result.user.weight);
-      setUHeight(result.user.height);
-      setUActivity(result.user.activity);
-      setUAllergy(result.user.allergy);
-      setUGoal(result.user.goal);
+      const user = result.user;
+
+      setUname(user.name);
+      setUEmail(user.email);
+      setUBday(user.birthday.split("T")[0]);
+      setUAge(user.birthday && getAge(user.birthday.split("T")[0]));
+      setUGender(user.gender);
+      setUWeight(user.weight);
+      setUHeight(user.height);
+      setUActivity(user.activity);
+      setUAllergy(user.allergy);
+      setUGoal(user.goal);
+
       setLoading(false);
-      showMessage("Profile saved successfully:", result.message);
+      showMessage(`Profile saved successfully: ${result.message}`);
       return result;
     } catch (error) {
       setLoading(false);
-      showMessage("ERROR: Failed to save profile:", error);
+      showMessage(`ERROR: Failed to save profile: ${error.message}`);
       return null;
     }
   };

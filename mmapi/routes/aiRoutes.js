@@ -111,14 +111,7 @@ aiRouts.post("/getMealPlan", async (req, res) => {
     // Call OpenAI API
     const apiResponse = await getAiResponse(dietaryRequirements);
     const mealPlan = apiResponse.choices[0].message.content;
-    console.log(mealPlan);
-    const cleanedString = mealPlan
-      .replace(/\n\n/g, ",")
-      .replace(/\n/g, "")
-      .replace(/,\s*$/, "");
-    const jsonArrayString = `[${cleanedString}]`;
-    console.log(jsonArrayString);
-    res.json(JSON.parse(jsonArrayString));
+    res.json(cleanAiResultStringJson(mealPlan));
   } catch (error) {
     res
       .status(500)
@@ -142,5 +135,47 @@ aiRouts.post("/getShoppingList", async (req, res) => {
       .json({ error: "Error generating meal plan", details: error.message });
   }
 });
+
+aiRouts.post("/getUserTarget", async (req, res) => {
+  try {
+    const { birthday, gender, weight, height, activity, allergy, goal } =
+      req.body;
+
+    const calTarget = {
+      UserInfo: {
+        activity_level: activity,
+        allergy: allergy,
+        birthday: birthday,
+        gender: gender,
+        goal: goal,
+        height: height,
+        weight: weight,
+      },
+      ResultNeededFormat: {
+        Calorie: "TotalCalorie in kcal per day",
+        Carbohydrates: "Carbohydrates in grams per day",
+        Proteins: "Proteins in grams per day",
+        Fats: "Fats in grams per day",
+      },
+      Instructions:
+        "Given the UserInfo find the Calories needed to achieve the goal in UserInfo. Give the result in ResultNeededFormat. The result should be a JSON in String format, Do not put any additional characters that are not related to the JSON like ```json, Give only number value. Do not add units",
+    };
+
+    // Call OpenAI API
+    const apiResponse = await getAiResponse(calTarget);
+    const targetRes = apiResponse.choices[0].message.content;
+    res.json(cleanAiResultStringJson(targetRes));
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Error generating user target", details: error.message });
+  }
+});
+
+function cleanAiResultStringJson(res) {
+  const cleanedString = res.replace(/\n\n/g, ",").replace(/\n/g, "").replace(/,\s*$/, "");
+  const jsonArrayString = `[${cleanedString}]`;
+  return JSON.parse(jsonArrayString);
+}
 
 module.exports = aiRouts;
